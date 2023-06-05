@@ -1,0 +1,49 @@
+apiVersion: v1
+entries:
+  backstage:
+  - annotations:
+      artifacthub.io/category: integration-delivery
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: support
+          url: https://github.com/janus-idp/helm-backstage/issues
+        - name: Chart Source
+          url: https://github.com/janus-idp/helm-backstage
+        - name: Default Image Source
+          url: https://github.com/janus-idp/backstage-showcase
+      charts.openshift.io/name: Backstage
+      charts.openshift.io/provider: Janus-IDP
+      charts.openshift.io/supportURL: https://github.com/janus-idp/helm-backstage/issues
+    apiVersion: v2
+    created: "2023-06-05T17:26:29.114821+02:00"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.x.x
+    - alias: upstream
+      name: backstage
+      repository: https://backstage.github.io/charts
+      version: 1.x.x
+    description: A Helm chart for deploying a Backstage application
+    digest: c9a0fe8d432c8ba8fdb57a694172fe13c3a6e962d0c5760a8be32a87731e1db2
+    home: https://janus-idp.io
+    icon: https://avatars.githubusercontent.com/u/117844786
+    keywords:
+    - backstage
+    - idp
+    - janus-idp
+    kubeVersion: '>= 1.19.0-0'
+    maintainers:
+    - name: Janus-IDP
+      url: https://janus-idp.io
+    name: backstage
+    sources:
+    - https://github.com/janus-idp/helm-backstage
+    - https://github.com/janus-idp/backstage-showcase
+    type: application
+    urls:
+    - https://raw.githubusercontent.com/tumido/helm-backstage/reproducer/backstage-2.0.1.tgz
+    version: 2.0.1
+generated: "2023-06-05T17:26:29.110263+02:00"
