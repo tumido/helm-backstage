@@ -1,0 +1,66 @@
+name: Bump
+
+on: issue_comment
+
+jobs:
+  chart-version:
+    name: Chart Version
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+
+    steps:
+      - name: Check for command
+        id: command
+        continue-on-error: true
+        uses: xt0rted/slash-command-action@bf51f8f5f4ea3d58abc7eca58f77104182b23e88 # v2
+        with:
+          command: bump
+          reaction: "true"
+          reaction-type: "eyes"
+          allow-edits: "false"
+          permission-level: write
+
+      - name: Checkout Repository
+        if: steps.command.outputs.command-name
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+
+      - name: Checkout Pull Request
+        if: steps.command.outputs.command-name
+        run: hub pr checkout ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get version
+        if: steps.command.outputs.command-name
+        id: get_version
+        uses: mikefarah/yq@6609ed76ecb69f9d8254345292d90ea72f641715  # v4.35.1
+        with:
+          cmd: yq ".version" charts/backstage/Chart.yaml
+
+      - uses: actions-ecosystem/action-bump-semver@34e334551143a5301f38c830e44a22273c6ff5c5  # v1
+        if: steps.command.outputs.command-name
+        id: semver
+        with:
+          current_version: ${{ steps.get_version.outputs.result }}
+          level: ${{ steps.command.outputs.command-arguments }}
+
+      - name: Bump the version
+        if: steps.command.outputs.command-name
+        uses: mikefarah/yq@6609ed76ecb69f9d8254345292d90ea72f641715  # v4.35.1
+        with:
+          cmd: yq -i '.version = "${{ steps.semver.outputs.new_version }}"' charts/backstage/Chart.yaml
+
+      - name: Setup Gitsign
+        if: steps.command.outputs.command-name
+        uses: chainguard-dev/actions/setup-gitsign@main
+
+      - name: Commit pre-commit changes
+        if: steps.command.outputs.command-name
+        uses: stefanzweifel/git-auto-commit-action@3ea6ae190baf489ba007f7c92608f33ce20ef04a # v4
+        with:
+          commit_message: Bump version to ${{ steps.semver.outputs.new_version }}
+          commit_options: '-s'
