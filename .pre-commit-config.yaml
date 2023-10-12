@@ -16,6 +16,6 @@ repos:
       - id: jsonschema-dereference
         name: jsonschema-dereference
         entry: python .pre-commit/jsonschema-dereference.py
-        additional_dependencies: [jsonref, Jinja2, pyyaml]
+        additional_dependencies: [jsonref]
         language: python
         types_or: [yaml, json]
